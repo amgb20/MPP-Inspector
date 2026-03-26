@@ -1,0 +1,17 @@
+{
+  "name": "mpp-inspector-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=packages/cli",
+    "dev": "npm run dev --workspace=packages/cli",
+    "test": "npm run test --workspace=packages/cli",
+    "lint": "npm run lint --workspace=packages/cli",
+    "check": "npm run lint && npm run test && npm run build"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

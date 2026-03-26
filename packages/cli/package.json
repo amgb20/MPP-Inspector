@@ -1,0 +1,60 @@
+{
+  "name": "mpp-inspector",
+  "version": "0.1.0",
+  "description": "Testing and debugging toolkit for Machine Payments Protocol",
+  "type": "module",
+  "bin": {
+    "mpp-inspector": "./dist/bin/mpp-inspector.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run lint && npm run test && npm run build"
+  },
+  "keywords": [
+    "mpp",
+    "machine-payments",
+    "http-402",
+    "payment-protocol",
+    "testing",
+    "debugging",
+    "cli"
+  ],
+  "author": "MPP Inspector Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlexandreBenoit/mpp-inspector.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/AAlexandreBenoit/mpp-inspector#readme",
+  "bugs": {
+    "url": "https://github.com/AAlexandreBenoit/mpp-inspector/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "boxen": "^8.0.1",
+    "chalk": "^5.4.1",
+    "cli-table3": "^0.6.5",
+    "commander": "^13.1.0",
+    "ora": "^8.2.0",
+    "viem": "^2.23.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.9"
+  }
+}
