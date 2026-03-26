@@ -2,7 +2,7 @@ import { defineConfig } from "tsup";
 
 export default defineConfig([
   {
-    entry: { "bin/mpp-inspector": "bin/mpp-inspector.ts" },
+    entry: { "bin/mpp-mock-server": "bin/mpp-mock-server.ts" },
     format: ["esm"],
     target: "node18",
     platform: "node",
@@ -17,9 +17,9 @@ export default defineConfig([
     format: ["esm"],
     target: "node18",
     platform: "node",
-    splitting: true,
+    splitting: false,
     clean: false,
-    dts: true,
+    dts: false,
     sourcemap: true,
   },
 ]);

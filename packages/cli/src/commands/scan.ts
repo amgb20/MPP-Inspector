@@ -14,7 +14,9 @@ export const scanCommand = new Command("scan")
   .option("--timeout <ms>", "Request timeout in milliseconds", "10000")
   .action(async (domain: string, options) => {
     const cleanDomain = domain.replace(/^https?:\/\//, "").replace(/\/+$/, "");
-    const baseUrl = `https://${cleanDomain}`;
+    const baseUrl = cleanDomain.includes("localhost") || cleanDomain.includes("127.0.0.1")
+      ? `http://${cleanDomain}`
+      : `https://${cleanDomain}`;
     const endpoints: MppEndpoint[] = [];
     const timeout = parseInt(options.timeout);
 
@@ -79,12 +81,14 @@ export const scanCommand = new Command("scan")
             const wwwAuth = response.headers.get("www-authenticate");
             if (wwwAuth?.toLowerCase().startsWith("payment ")) {
               const challenge = parseChallengeHeader(wwwAuth);
+              const req = challenge.requestDecoded;
               endpoints.push({
                 method: "GET",
                 path,
-                price: challenge.amount,
+                price: req?.amount,
                 intent: challenge.intent,
-                description: challenge.description,
+                description: challenge.extra.description,
+                paymentMethod: challenge.method,
               });
             }
           }

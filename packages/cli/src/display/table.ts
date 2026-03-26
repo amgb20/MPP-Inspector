@@ -2,7 +2,7 @@ import Table from "cli-table3";
 import boxen from "boxen";
 import chalk from "chalk";
 import type { CompareEntry, MppEndpoint, BenchmarkResult, LatencyStats } from "../types.js";
-import { formatDuration, section, label } from "../utils/format.js";
+import { formatDuration, formatPaymentMethod, section, label } from "../utils/format.js";
 
 export function displayPriceComparison(entries: readonly CompareEntry[]): void {
   const header = boxen(`  ${chalk.bold("MPP Price Comparison")}`, {
@@ -14,15 +14,22 @@ export function displayPriceComparison(entries: readonly CompareEntry[]): void {
   console.log();
 
   const table = new Table({
-    head: ["Service", "Price", "Intent", "Currency", "Chain"].map((h) => chalk.bold(h)),
+    head: ["Service", "Price", "Method", "Intent", "Currency", "Chain"].map((h) => chalk.bold(h)),
     style: { head: [], border: [] },
   });
 
   for (const entry of entries) {
     if (entry.error) {
-      table.push([entry.service, chalk.red(entry.error), "-", "-", "-"]);
+      table.push([entry.service, chalk.red(entry.error), "-", "-", "-", "-"]);
     } else {
-      table.push([entry.service, chalk.green(`$${entry.price}`), entry.intent, entry.currency, entry.chain]);
+      table.push([
+        entry.service,
+        chalk.green(`$${entry.price}`),
+        formatPaymentMethod(entry.paymentMethod),
+        entry.intent,
+        entry.currency,
+        entry.chain,
+      ]);
     }
   }
 
@@ -32,11 +39,26 @@ export function displayPriceComparison(entries: readonly CompareEntry[]): void {
   if (valid.length > 0) {
     const cheapest = valid.reduce((min, e) => (parseFloat(e.price) < parseFloat(min.price) ? e : min));
     console.log();
-    console.log(`  ${chalk.green("Cheapest:")} ${cheapest.service} ($${cheapest.price}/query)`);
+    console.log(`  ${chalk.green("Cheapest:")} ${cheapest.service} ($${cheapest.price}/query via ${formatPaymentMethod(cheapest.paymentMethod)})`);
 
     const sessionEnabled = valid.filter((e) => e.intent === "session");
     if (sessionEnabled.length > 0) {
       console.log(`  ${chalk.blue("Session-enabled:")} ${sessionEnabled.map((e) => e.service).join(", ")} (cheaper at volume)`);
+    }
+
+    // Group by payment method
+    const byMethod = new Map<string, CompareEntry[]>();
+    for (const entry of valid) {
+      const list = byMethod.get(entry.paymentMethod) ?? [];
+      list.push(entry);
+      byMethod.set(entry.paymentMethod, list);
+    }
+    if (byMethod.size > 1) {
+      console.log();
+      console.log(`  ${chalk.dim("Payment methods available:")}`);
+      for (const [method, entries] of byMethod) {
+        console.log(`    ${formatPaymentMethod(method)}: ${entries.map((e) => e.service).join(", ")}`);
+      }
     }
   }
   console.log();
@@ -46,7 +68,7 @@ export function displayEndpointTable(endpoints: readonly MppEndpoint[], domain: 
   console.log(`\n  Discovered ${chalk.bold(String(endpoints.length))} MPP-enabled endpoints:\n`);
 
   const table = new Table({
-    head: ["Endpoint", "Price", "Description"].map((h) => chalk.bold(h)),
+    head: ["Endpoint", "Price", "Method", "Description"].map((h) => chalk.bold(h)),
     style: { head: [], border: [] },
   });
 
@@ -54,6 +76,7 @@ export function displayEndpointTable(endpoints: readonly MppEndpoint[], domain: 
     table.push([
       `${ep.method} ${ep.path}`,
       ep.price ? chalk.green(`$${ep.price}`) : chalk.dim("unknown"),
+      ep.paymentMethod ? formatPaymentMethod(ep.paymentMethod) : chalk.dim("-"),
       ep.description ?? "",
     ]);
   }

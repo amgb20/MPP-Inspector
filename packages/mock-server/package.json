@@ -1,0 +1,43 @@
+{
+  "name": "@mpp-inspector/mock-server",
+  "version": "0.1.0",
+  "description": "Mock MPP server for testing and demoing mpp-inspector",
+  "type": "module",
+  "bin": {
+    "mpp-mock-server": "./dist/bin/mpp-mock-server.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "start": "node dist/bin/mpp-mock-server.js",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "mpp",
+    "machine-payments",
+    "mock-server",
+    "http-402",
+    "testing"
+  ],
+  "author": "MPP Inspector Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlexandreBenoit/mpp-inspector.git",
+    "directory": "packages/mock-server"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3"
+  }
+}

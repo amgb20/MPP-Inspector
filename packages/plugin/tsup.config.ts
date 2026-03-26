@@ -2,7 +2,7 @@ import { defineConfig } from "tsup";
 
 export default defineConfig([
   {
-    entry: { "bin/mpp-inspector": "bin/mpp-inspector.ts" },
+    entry: { index: "src/index.ts" },
     format: ["esm"],
     target: "node18",
     platform: "node",
@@ -11,15 +11,16 @@ export default defineConfig([
     dts: false,
     sourcemap: true,
     banner: { js: "#!/usr/bin/env node" },
+    noExternal: [/^(?!mpp-inspector$)/],
   },
   {
-    entry: { index: "src/index.ts" },
+    entry: { "hooks/session-check": "src/hooks/session-check.ts" },
     format: ["esm"],
     target: "node18",
     platform: "node",
-    splitting: true,
+    splitting: false,
     clean: false,
-    dts: true,
+    dts: false,
     sourcemap: true,
   },
 ]);

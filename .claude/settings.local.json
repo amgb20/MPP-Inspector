@@ -3,7 +3,17 @@
     "allow": [
       "Read(//c/Users/AlexandreBenoit/Documents/Personal/MPP-Inspector/**)",
       "Bash(npm install:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "WebFetch(domain:mpp.dev)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:developers.cloudflare.com)",
+      "WebFetch(domain:dev.to)",
+      "WebFetch(domain:www.mppscan.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:docs.stripe.com)",
+      "Bash(npx vitest:*)",
+      "Bash(mpp-inspector flow:*)"
     ]
   }
 }

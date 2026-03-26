@@ -6,7 +6,7 @@ import { parseChallengeHeader } from "../utils/parser.js";
 import { verifyChallengeFields } from "../utils/crypto.js";
 import { createMppWallet, getBalance, resolvePrivateKey } from "../utils/wallet.js";
 import { displayFlowHeader, displayFlowStep, displayFlowSummary, flowToJson } from "../display/flow.js";
-import { truncateAddress, formatAmount } from "../utils/format.js";
+import { truncateAddress, formatAmount, formatPaymentMethod } from "../utils/format.js";
 import type { FlowStep } from "../types.js";
 
 export const flowCommand = new Command("flow")
@@ -57,30 +57,39 @@ export const flowCommand = new Command("flow")
     const step2Start = performance.now();
     const wwwAuth = response.headers.get("www-authenticate") ?? "";
     const challenge = parseChallengeHeader(wwwAuth);
+    const req = challenge.requestDecoded;
     const step2Time = performance.now() - step2Start;
+
+    const expiresIn = challenge.expires
+      ? `${Math.floor((new Date(challenge.expires).getTime() - Date.now()) / 1000)}s`
+      : "unknown";
 
     steps.push({
       name: "Parse challenge",
       status: "success",
       timing: step2Time,
       details: {
+        Method: formatPaymentMethod(challenge.method),
         Intent: challenge.intent,
-        Amount: challenge.amount,
-        Expires: `${Math.floor((challenge.expiresAt - Date.now() / 1000))}s`,
-        Recipient: truncateAddress(challenge.recipient),
+        Amount: req?.amount ?? "unknown",
+        Expires: expiresIn,
+        Recipient: req?.recipient ? truncateAddress(req.recipient) : "N/A",
       },
     });
 
-    const chainId = options.testnet ? 4218 : challenge.chainId || 4217;
+    const chainId = options.testnet ? 4218 : (req?.chainId ?? 4217);
 
     if (options.dryRun) {
-      // Dry run: show what would happen
+      const costDesc = req?.amount
+        ? formatAmount(req.amount, req.currency)
+        : "unknown";
+
       steps.push({
         name: "Sign transaction (dry-run)",
         status: "skipped",
         timing: 0,
         details: {
-          note: "Would sign transaction for " + formatAmount(challenge.amount, challenge.currency),
+          note: `Would sign ${challenge.method} transaction for ${costDesc}`,
           "gas estimate": "~21000 (~$0.0001)",
         },
       });
@@ -115,7 +124,6 @@ export const flowCommand = new Command("flow")
       // 1. Build the payment transaction based on challenge params
       // 2. Sign with the wallet
       // 3. Submit to the chain
-      // For now, we demonstrate the flow structure
       const step3Time = performance.now() - step3Start;
 
       steps.push({
@@ -124,6 +132,7 @@ export const flowCommand = new Command("flow")
         timing: step3Time,
         details: {
           wallet: truncateAddress(wallet.address),
+          method: formatPaymentMethod(challenge.method),
           "gas estimate": "21000 (~$0.0001)",
         },
       });
@@ -162,7 +171,8 @@ export const flowCommand = new Command("flow")
     if (options.json) {
       const summary = {
         totalTime: steps.reduce((s, st) => s + st.timing, 0),
-        amount: challenge.amount,
+        amount: req?.amount ?? "unknown",
+        method: challenge.method,
         dryRun: !!options.dryRun,
       };
       console.log(JSON.stringify(flowToJson(steps, summary), null, 2));
@@ -176,7 +186,7 @@ export const flowCommand = new Command("flow")
       for (let i = 2; i < steps.length; i++) {
         displayFlowStep(steps[i], i, 5);
       }
-      displayFlowSummary(steps, { amount: challenge.amount, gas: "0.0001" });
+      displayFlowSummary(steps, { amount: req?.amount ?? "0", gas: "0.0001" });
     }
 
     if (options.save) {

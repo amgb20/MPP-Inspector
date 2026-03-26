@@ -6,10 +6,16 @@
   ],
   "scripts": {
     "build": "npm run build --workspace=packages/cli",
+    "build:mock": "npm run build --workspace=packages/mock-server",
+    "build:plugin": "npm run build --workspace=packages/plugin",
+    "build:all": "npm run build --workspaces",
     "dev": "npm run dev --workspace=packages/cli",
+    "dev:plugin": "npm run dev --workspace=packages/plugin",
     "test": "npm run test --workspace=packages/cli",
     "lint": "npm run lint --workspace=packages/cli",
-    "check": "npm run lint && npm run test && npm run build"
+    "check": "npm run lint && npm run test && npm run build",
+    "mock": "npm run start --workspace=packages/mock-server",
+    "demo": "echo 'Start the mock server first: npm run mock' && echo 'Then in another terminal:' && echo '  npx mpp-inspector inspect http://localhost:3402/v1/query' && echo '  npx mpp-inspector scan localhost:3402'"
   },
   "engines": {
     "node": ">=18.0.0"

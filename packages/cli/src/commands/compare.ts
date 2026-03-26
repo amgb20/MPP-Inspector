@@ -3,7 +3,8 @@ import chalk from "chalk";
 import { rawRequest } from "../utils/http.js";
 import { parseChallengeHeader } from "../utils/parser.js";
 import { displayPriceComparison, compareToJson } from "../display/table.js";
-import { getTokenSymbol, getChainName } from "../utils/chains.js";
+import { resolveCurrency, getChainName } from "../utils/chains.js";
+import { formatPaymentMethod } from "../utils/format.js";
 import type { CompareEntry } from "../types.js";
 
 export const compareCommand = new Command("compare")
@@ -33,6 +34,7 @@ export const compareCommand = new Command("compare")
               intent: "-",
               currency: "-",
               chain: "-",
+              paymentMethod: "-",
               error: `HTTP ${response.status}`,
             };
           }
@@ -46,19 +48,22 @@ export const compareCommand = new Command("compare")
               intent: "-",
               currency: "-",
               chain: "-",
+              paymentMethod: "-",
               error: "No MPP header",
             };
           }
 
           const challenge = parseChallengeHeader(wwwAuth);
+          const req = challenge.requestDecoded;
 
           return {
             url,
             service: hostname,
-            price: challenge.amount,
+            price: req?.amount ?? "unknown",
             intent: challenge.intent,
-            currency: getTokenSymbol(challenge.currency) ?? "unknown",
-            chain: getChainName(challenge.chainId),
+            currency: resolveCurrency(req?.currency),
+            chain: getChainName(req?.chainId),
+            paymentMethod: challenge.method || "unknown",
           };
         } catch (err) {
           return {
@@ -68,6 +73,7 @@ export const compareCommand = new Command("compare")
             intent: "-",
             currency: "-",
             chain: "-",
+            paymentMethod: "-",
             error: err instanceof Error ? err.message : "Unknown error",
           };
         }

@@ -1,0 +1,53 @@
+{
+  "name": "@mpp-inspector/plugin",
+  "version": "0.1.0",
+  "description": "MCP server and Claude Code plugin for Machine Payments Protocol inspection",
+  "type": "module",
+  "bin": {
+    "mpp-inspector-mcp": "./dist/index.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    ".claude-plugin",
+    "skills",
+    "hooks",
+    ".mcp.json"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "mpp",
+    "machine-payments",
+    "mcp",
+    "claude",
+    "cursor",
+    "http-402",
+    "ai-tools"
+  ],
+  "author": "MPP Inspector Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlexandreBenoit/mpp-inspector.git",
+    "directory": "packages/plugin"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "zod": "^3.25.23",
+    "mpp-inspector": "0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,7 +1,7 @@
 import { Command } from "commander";
 import chalk from "chalk";
 import { rawRequest } from "../utils/http.js";
-import { parseChallengeHeader } from "../utils/parser.js";
+import { parseChallengeHeader, parseProblemDetails } from "../utils/parser.js";
 import { verifyChallengeFields } from "../utils/crypto.js";
 import { displayChallenge, challengeToJson } from "../display/challenge.js";
 
@@ -48,11 +48,12 @@ export const inspectCommand = new Command("inspect")
 
     const challenge = parseChallengeHeader(wwwAuth);
     const verification = verifyChallengeFields(challenge);
+    const problemDetails = parseProblemDetails(response.body);
 
     if (options.json) {
-      console.log(JSON.stringify(challengeToJson(url, challenge, verification), null, 2));
+      console.log(JSON.stringify(challengeToJson(url, challenge, verification, problemDetails), null, 2));
     } else {
-      displayChallenge(url, challenge, verification);
+      displayChallenge(url, challenge, verification, problemDetails);
     }
 
     if (options.curl) {

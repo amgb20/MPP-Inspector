@@ -1,0 +1,21 @@
+{
+  "name": "mpp-inspector",
+  "description": "Inspect, debug, and test Machine Payments Protocol (HTTP 402) endpoints directly from your AI coding assistant",
+  "version": "0.1.0",
+  "author": {
+    "name": "MPP Inspector Contributors",
+    "url": "https://github.com/AlexandreBenoit/mpp-inspector"
+  },
+  "repository": "https://github.com/AlexandreBenoit/mpp-inspector",
+  "homepage": "https://github.com/AlexandreBenoit/mpp-inspector#readme",
+  "license": "MIT",
+  "keywords": [
+    "mpp",
+    "http-402",
+    "payments",
+    "web3",
+    "tempo",
+    "debugging",
+    "mcp"
+  ]
+}

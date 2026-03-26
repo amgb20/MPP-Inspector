@@ -1,13 +1,14 @@
 import chalk from "chalk";
-import { getTokenSymbol, getChainName } from "./chains.js";
+import { getTokenSymbol, getChainName, resolveCurrency } from "./chains.js";
 
 export function truncateAddress(addr: string, start = 6, end = 4): string {
   if (addr.length <= start + end + 3) return addr;
   return `${addr.slice(0, start)}...${addr.slice(-end)}`;
 }
 
-export function formatAmount(amount: string, currency?: string): string {
-  const symbol = currency ? getTokenSymbol(currency) : undefined;
+export function formatAmount(amount: string | undefined, currency?: string): string {
+  if (!amount) return "unknown";
+  const symbol = currency ? resolveCurrency(currency) : undefined;
   const num = parseFloat(amount);
   if (isNaN(num)) return `${amount} ${symbol ?? ""}`.trim();
   const formatted = num < 0.01 ? num.toFixed(6) : num < 1 ? num.toFixed(4) : num.toFixed(2);
@@ -28,17 +29,33 @@ export function formatDuration(ms: number): string {
   return `${minutes}m ${seconds}s`;
 }
 
-export function formatTimeRemaining(expiresAt: number): string {
-  const now = Math.floor(Date.now() / 1000);
-  const remaining = expiresAt - now;
+export function formatExpiry(expires: string): string {
+  if (!expires) return chalk.dim("none");
+  const expiryDate = new Date(expires);
+  if (isNaN(expiryDate.getTime())) return chalk.dim(expires);
+  const remaining = expiryDate.getTime() - Date.now();
   if (remaining <= 0) return chalk.red("expired");
-  const minutes = Math.floor(remaining / 60);
-  const seconds = remaining % 60;
-  return `${minutes}m ${seconds.toString().padStart(2, "0")}s remaining`;
+  const totalSeconds = Math.floor(remaining / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${expires} (${minutes}m ${seconds.toString().padStart(2, "0")}s remaining)`;
 }
 
-export function formatChainName(chainId: number): string {
+export function formatChainName(chainId: number | undefined): string {
+  if (chainId === undefined || chainId === 0) return "N/A";
   return `${getChainName(chainId)} (${chainId})`;
+}
+
+export function formatPaymentMethod(method: string): string {
+  const names: Record<string, string> = {
+    tempo: "Tempo",
+    stripe: "Stripe",
+    lightning: "Lightning",
+    solana: "Solana",
+    card: "Card",
+    custom: "Custom",
+  };
+  return names[method.toLowerCase()] ?? method;
 }
 
 export function progressBar(current: number, total: number, width = 40): string {

@@ -1,45 +1,81 @@
 import { isAddress } from "viem";
 import type { MppChallenge, MppVerification } from "../types.js";
-import { getTokenInfo } from "./chains.js";
+import { isKnownPaymentMethod, isBlockchainMethod, resolveCurrency } from "./chains.js";
 
 export function verifyChallengeFields(challenge: MppChallenge): MppVerification {
   const errors: string[] = [];
+  const req = challenge.requestDecoded;
 
-  const recipientValid = isAddress(challenge.recipient);
-  if (!recipientValid) errors.push(`Invalid recipient address: ${challenge.recipient}`);
+  // Method validation
+  const methodKnown = isKnownPaymentMethod(challenge.method);
+  if (!methodKnown && challenge.method) {
+    errors.push(`Unknown payment method: ${challenge.method}`);
+  }
+  if (!challenge.method) {
+    errors.push("Missing payment method");
+  }
 
+  // Expiry validation (ISO 8601 string)
+  let expiryValid = false;
+  if (challenge.expires) {
+    const expiryDate = new Date(challenge.expires);
+    if (isNaN(expiryDate.getTime())) {
+      errors.push(`Invalid expires format: ${challenge.expires}`);
+    } else {
+      expiryValid = expiryDate.getTime() > Date.now();
+      if (!expiryValid) {
+        errors.push(`Challenge expired at ${challenge.expires}`);
+      }
+    }
+  } else {
+    errors.push("Missing expires field");
+  }
+
+  // Amount validation (from decoded request params)
   let amountParseable = false;
-  try {
-    const num = parseFloat(challenge.amount);
+  if (req?.amount) {
+    const num = parseFloat(req.amount);
     amountParseable = !isNaN(num) && num >= 0;
-    if (!amountParseable) errors.push(`Invalid amount: ${challenge.amount}`);
-  } catch {
-    errors.push(`Cannot parse amount: ${challenge.amount}`);
+    if (!amountParseable) errors.push(`Invalid amount: ${req.amount}`);
+  } else if (challenge.request) {
+    // request exists but we couldn't find amount — might be method-specific
+    amountParseable = true; // don't flag as error, method might use different field
   }
 
-  const now = Math.floor(Date.now() / 1000);
-  const expiryValid = challenge.expiresAt > now;
-  if (!expiryValid && challenge.expiresAt > 0) {
-    errors.push(`Challenge expired at ${new Date(challenge.expiresAt * 1000).toISOString()}`);
+  // Recipient validation (only for blockchain methods)
+  let recipientValid: boolean | null = null;
+  if (req?.recipient) {
+    if (isBlockchainMethod(challenge.method)) {
+      recipientValid = isAddress(req.recipient);
+      if (!recipientValid) errors.push(`Invalid recipient address: ${req.recipient}`);
+    } else {
+      recipientValid = true; // non-blockchain methods don't need address validation
+    }
   }
 
-  const tokenInfo = getTokenInfo(challenge.currency);
-  const currencyKnown = tokenInfo !== undefined;
-  if (!currencyKnown && challenge.currency) {
-    errors.push(`Unknown currency token: ${challenge.currency}`);
+  // Currency validation (method-specific)
+  let currencyKnown: boolean | null = null;
+  if (req?.currency) {
+    const resolved = resolveCurrency(req.currency);
+    currencyKnown = resolved !== "unknown";
+    if (!currencyKnown) {
+      // Not an error — just unknown to our registry
+      currencyKnown = null;
+    }
   }
 
   // Signature verification requires knowing the signing scheme.
-  // MPP uses EIP-712 typed data or similar — without the full spec
+  // MPP uses method-specific signatures — without the full spec
   // we mark as null (unverifiable) rather than false.
-  const signatureValid = challenge.signature ? null : null;
+  const signatureValid: boolean | null = null;
 
   return {
     signatureValid,
     expiryValid,
-    currencyKnown,
-    recipientValid,
+    methodKnown,
     amountParseable,
+    recipientValid,
+    currencyKnown,
     errors,
   };
 }
