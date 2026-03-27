@@ -1,6 +1,6 @@
 {
   "name": "mpp-inspector",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Testing and debugging toolkit for Machine Payments Protocol",
   "type": "module",
   "bin": {
