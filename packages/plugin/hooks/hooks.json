@@ -2,10 +2,11 @@
   "hooks": {
     "SessionStart": [
       {
+        "matcher": "startup|resume",
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/dist/hooks/session-check.js",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/dist/hooks/session-check.js\"",
             "timeout": 5000
           }
         ]
