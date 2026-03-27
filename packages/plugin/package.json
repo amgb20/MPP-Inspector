@@ -13,8 +13,7 @@
     "dist",
     ".claude-plugin",
     "skills",
-    "hooks",
-    ".mcp.json"
+    "hooks"
   ],
   "scripts": {
     "build": "tsup",

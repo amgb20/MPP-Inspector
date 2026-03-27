@@ -1,6 +1,6 @@
 {
   "name": "mpp-inspector",
-  "description": "Inspect, debug, and test Machine Payments Protocol (HTTP 402) endpoints directly from your AI coding assistant",
+  "description": "Inspect, debug, and test Machine Payments Protocol (HTTP 402) endpoints directly from Claude Code",
   "version": "0.1.0",
   "author": {
     "name": "MPP Inspector Contributors",
@@ -17,5 +17,13 @@
     "tempo",
     "debugging",
     "mcp"
-  ]
+  ],
+  "commands": ["./skills/"],
+  "mcpServers": {
+    "mpp-inspector": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/dist/index.js"]
+    }
+  },
+  "hooks": "./hooks/hooks.json"
 }
