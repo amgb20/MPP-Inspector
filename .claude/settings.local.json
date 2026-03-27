@@ -15,7 +15,8 @@
       "Bash(npx vitest:*)",
       "Bash(mpp-inspector flow:*)",
       "Bash(npx husky:*)",
-      "Bash(MPP_REAL_ENDPOINT_TESTS=true npm run test:integration)"
+      "Bash(MPP_REAL_ENDPOINT_TESTS=true npm run test:integration)",
+      "Bash(ls C:/Users/AlexandreBenoit/Documents/Personal/MPP-Inspector/eslint.config.*)"
     ]
   }
 }
