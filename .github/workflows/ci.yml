@@ -14,7 +14,7 @@ jobs:
         node-version: [20, 22]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint-and-unit
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Use Node.js 22
         uses: actions/setup-node@v4
@@ -73,7 +73,7 @@ jobs:
     needs: lint-and-unit
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Use Node.js 22
         uses: actions/setup-node@v4
