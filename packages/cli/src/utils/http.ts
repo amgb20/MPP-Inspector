@@ -57,7 +57,10 @@ export async function rawRequest(url: string, options: RequestOptions = {}): Pro
   }
 }
 
-export async function fetchJson(url: string, timeout?: number): Promise<{ data: unknown; status: number }> {
+export async function fetchJson(
+  url: string,
+  timeout?: number,
+): Promise<{ data: unknown; status: number }> {
   const response = await rawRequest(url, { timeout });
   try {
     const data = JSON.parse(response.body);

@@ -1,10 +1,8 @@
 import { Command } from "commander";
-import chalk from "chalk";
 import { rawRequest } from "../utils/http.js";
 import { parseChallengeHeader } from "../utils/parser.js";
 import { displayPriceComparison, compareToJson } from "../display/table.js";
 import { resolveCurrency, getChainName } from "../utils/chains.js";
-import { formatPaymentMethod } from "../utils/format.js";
 import type { CompareEntry } from "../types.js";
 
 export const compareCommand = new Command("compare")

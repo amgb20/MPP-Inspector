@@ -1,5 +1,11 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { DEMO_ENDPOINTS, DEMO_MANIFEST, LLMS_TXT, buildChallengeHeader, buildDemoReceipt } from "./fixtures.js";
+import {
+  DEMO_ENDPOINTS,
+  DEMO_MANIFEST,
+  LLMS_TXT,
+  buildChallengeHeader,
+  buildDemoReceipt,
+} from "./fixtures.js";
 
 export interface MockServerOptions {
   port?: number;
@@ -67,7 +73,9 @@ function handleRequest(req: IncomingMessage, res: ServerResponse, silent: boolea
 
   if (path === "/v1/validate-receipt") {
     let body = "";
-    req.on("data", (chunk: Buffer) => { body += chunk.toString(); });
+    req.on("data", (chunk: Buffer) => {
+      body += chunk.toString();
+    });
     req.on("end", () => {
       log(silent, `    200 receipt accepted`);
       json(res, 200, { valid: true, received: body.length > 0 });
@@ -82,7 +90,11 @@ function handleRequest(req: IncomingMessage, res: ServerResponse, silent: boolea
       log(silent, `    200 OK (authorized)`);
 
       // Generate a spec-compliant receipt
-      const receiptBase64 = buildDemoReceipt("demo-challenge", endpoint.paymentMethod, endpoint.price);
+      const receiptBase64 = buildDemoReceipt(
+        "demo-challenge",
+        endpoint.paymentMethod,
+        endpoint.price,
+      );
 
       json(res, 200, {
         data: { message: `Authorized access to ${endpoint.description}`, endpoint: path },
@@ -99,12 +111,14 @@ function handleRequest(req: IncomingMessage, res: ServerResponse, silent: boolea
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     });
-    res.end(JSON.stringify({
-      error: "Payment Required",
-      message: `This endpoint requires payment of ${endpoint.price} ${endpoint.currency} via ${endpoint.paymentMethod}`,
-      protocol: "MPP",
-      docs: "https://mpp.dev/overview",
-    }));
+    res.end(
+      JSON.stringify({
+        error: "Payment Required",
+        message: `This endpoint requires payment of ${endpoint.price} ${endpoint.currency} via ${endpoint.paymentMethod}`,
+        protocol: "MPP",
+        docs: "https://mpp.dev/overview",
+      }),
+    );
     return;
   }
 
@@ -129,7 +143,9 @@ export function createMockServer(options: MockServerOptions = {}) {
           console.log();
           console.log(`  Endpoints:`);
           for (const ep of DEMO_ENDPOINTS) {
-            console.log(`    ${ep.httpMethod.padEnd(5)} ${ep.path.padEnd(20)} ${ep.price.padEnd(8)} ${ep.currency}  (${ep.paymentMethod}, ${ep.intent})`);
+            console.log(
+              `    ${ep.httpMethod.padEnd(5)} ${ep.path.padEnd(20)} ${ep.price.padEnd(8)} ${ep.currency}  (${ep.paymentMethod}, ${ep.intent})`,
+            );
           }
           console.log();
           console.log(`  Discovery:`);

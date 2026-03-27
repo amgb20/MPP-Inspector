@@ -37,13 +37,19 @@ export function displayPriceComparison(entries: readonly CompareEntry[]): void {
 
   const valid = entries.filter((e) => !e.error);
   if (valid.length > 0) {
-    const cheapest = valid.reduce((min, e) => (parseFloat(e.price) < parseFloat(min.price) ? e : min));
+    const cheapest = valid.reduce((min, e) =>
+      parseFloat(e.price) < parseFloat(min.price) ? e : min,
+    );
     console.log();
-    console.log(`  ${chalk.green("Cheapest:")} ${cheapest.service} ($${cheapest.price}/query via ${formatPaymentMethod(cheapest.paymentMethod)})`);
+    console.log(
+      `  ${chalk.green("Cheapest:")} ${cheapest.service} ($${cheapest.price}/query via ${formatPaymentMethod(cheapest.paymentMethod)})`,
+    );
 
     const sessionEnabled = valid.filter((e) => e.intent === "session");
     if (sessionEnabled.length > 0) {
-      console.log(`  ${chalk.blue("Session-enabled:")} ${sessionEnabled.map((e) => e.service).join(", ")} (cheaper at volume)`);
+      console.log(
+        `  ${chalk.blue("Session-enabled:")} ${sessionEnabled.map((e) => e.service).join(", ")} (cheaper at volume)`,
+      );
     }
 
     // Group by payment method
@@ -57,7 +63,9 @@ export function displayPriceComparison(entries: readonly CompareEntry[]): void {
       console.log();
       console.log(`  ${chalk.dim("Payment methods available:")}`);
       for (const [method, entries] of byMethod) {
-        console.log(`    ${formatPaymentMethod(method)}: ${entries.map((e) => e.service).join(", ")}`);
+        console.log(
+          `    ${formatPaymentMethod(method)}: ${entries.map((e) => e.service).join(", ")}`,
+        );
       }
     }
   }
@@ -110,7 +118,10 @@ export function displayBenchmarkResults(result: BenchmarkResult, url: string): v
 
   const successRate = ((result.successful / result.totalRequests) * 100).toFixed(0);
   const statusLine = `${result.successful}/${result.totalRequests} (${successRate}%)`;
-  const failLine = result.failed > 0 ? `${result.failed}/${result.totalRequests} (${result.errors.join(", ")})` : "0";
+  const failLine =
+    result.failed > 0
+      ? `${result.failed}/${result.totalRequests} (${result.errors.join(", ")})`
+      : "0";
 
   const details = [
     label("Successful:", chalk.green(statusLine)),

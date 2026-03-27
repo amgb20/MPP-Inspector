@@ -34,11 +34,12 @@ export function displayChallenge(
   console.log(label("Protocol:", "MPP (Payment HTTP Authentication Scheme)"));
 
   const req = challenge.requestDecoded;
-  const intentDesc = challenge.intent === "charge"
-    ? "charge (one-time payment)"
-    : challenge.intent === "session"
-      ? "session (streaming/prepaid)"
-      : challenge.intent;
+  const intentDesc =
+    challenge.intent === "charge"
+      ? "charge (one-time payment)"
+      : challenge.intent === "session"
+        ? "session (streaming/prepaid)"
+        : challenge.intent;
 
   const currencyDisplay = req?.currency ? resolveCurrency(req.currency) : "N/A";
   const amountDisplay = req?.amount
@@ -49,7 +50,10 @@ export function displayChallenge(
   const description = challenge.description ?? problemDetails?.detail;
 
   const details = [
-    label("Challenge ID:", challenge.id ? truncateAddress(challenge.id, 12, 0) : chalk.dim("(none)")),
+    label(
+      "Challenge ID:",
+      challenge.id ? truncateAddress(challenge.id, 12, 0) : chalk.dim("(none)"),
+    ),
     label("Realm:", challenge.realm || chalk.dim("(none)")),
     label("Method:", formatPaymentMethod(challenge.method) || chalk.dim("(none)")),
     label("Intent:", intentDesc),
@@ -114,10 +118,16 @@ export function displayChallenge(
   const checks = [
     check(verification.signatureValid, "Challenge signature valid"),
     check(verification.expiryValid, "Expiry in future"),
-    check(verification.methodKnown, `Payment method known (${formatPaymentMethod(challenge.method)})`),
+    check(
+      verification.methodKnown,
+      `Payment method known (${formatPaymentMethod(challenge.method)})`,
+    ),
     check(verification.amountParseable, "Amount parseable"),
     check(verification.recipientValid, "Recipient valid"),
-    check(verification.currencyKnown, "Currency recognized" + (currencyDisplay !== "N/A" ? ` (${currencyDisplay})` : "")),
+    check(
+      verification.currencyKnown,
+      "Currency recognized" + (currencyDisplay !== "N/A" ? ` (${currencyDisplay})` : ""),
+    ),
   ].join("\n");
   console.log("\n" + section("Verification", checks));
 
@@ -133,7 +143,9 @@ export function displayChallenge(
   const methodDesc = methodInfo ? methodInfo.description : `${challenge.method} payment`;
   console.log(label("Payment method:", methodDesc));
   if (req?.amount) {
-    console.log(label("Estimated cost:", `$${req.amount} USD${methodInfo?.blockchain ? " + gas" : ""}`));
+    console.log(
+      label("Estimated cost:", `$${req.amount} USD${methodInfo?.blockchain ? " + gas" : ""}`),
+    );
   }
   console.log();
 }

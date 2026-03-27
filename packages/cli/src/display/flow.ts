@@ -4,7 +4,11 @@ import type { FlowStep } from "../types.js";
 import { formatDuration, label, section } from "../utils/format.js";
 
 export function displayFlowHeader(url: string, walletAddress: string, balance?: string): void {
-  const lines = [`  ${chalk.bold("MPP Payment Flow")}`, `  ${chalk.dim("URL:")} ${url}`, `  ${chalk.dim("Wallet:")} ${walletAddress}`];
+  const lines = [
+    `  ${chalk.bold("MPP Payment Flow")}`,
+    `  ${chalk.dim("URL:")} ${url}`,
+    `  ${chalk.dim("Wallet:")} ${walletAddress}`,
+  ];
   if (balance) lines.push(`  ${chalk.dim("Balance:")} ${balance}`);
 
   console.log(
@@ -20,10 +24,16 @@ export function displayFlowHeader(url: string, walletAddress: string, balance?: 
 export function displayFlowStep(step: FlowStep, index: number, total: number): void {
   const timing = chalk.dim(`[${formatDuration(step.timing)}]`);
   const statusIcon =
-    step.status === "success" ? chalk.green("\u2713") : step.status === "failure" ? chalk.red("\u2717") : chalk.yellow("-");
+    step.status === "success"
+      ? chalk.green("\u2713")
+      : step.status === "failure"
+        ? chalk.red("\u2717")
+        : chalk.yellow("-");
 
   console.log();
-  console.log(`  ${statusIcon} ${chalk.bold(`Step ${index + 1}/${total}`)} \u2500 ${step.name}  ${timing}`);
+  console.log(
+    `  ${statusIcon} ${chalk.bold(`Step ${index + 1}/${total}`)} \u2500 ${step.name}  ${timing}`,
+  );
 
   for (const [key, value] of Object.entries(step.details)) {
     if (value !== undefined && value !== null) {
@@ -32,9 +42,14 @@ export function displayFlowStep(step: FlowStep, index: number, total: number): v
   }
 }
 
-export function displayFlowSummary(steps: readonly FlowStep[], totalCost?: { amount: string; gas: string }): void {
+export function displayFlowSummary(
+  steps: readonly FlowStep[],
+  totalCost?: { amount: string; gas: string },
+): void {
   const totalTime = steps.reduce((sum, s) => sum + s.timing, 0);
-  const paymentSteps = steps.filter((s) => s.name.toLowerCase().includes("sign") || s.name.toLowerCase().includes("retry"));
+  const paymentSteps = steps.filter(
+    (s) => s.name.toLowerCase().includes("sign") || s.name.toLowerCase().includes("retry"),
+  );
   const paymentTime = paymentSteps.reduce((sum, s) => sum + s.timing, 0);
   const paymentPct = totalTime > 0 ? ((paymentTime / totalTime) * 100).toFixed(1) : "0";
 

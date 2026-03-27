@@ -1,7 +1,12 @@
 import { Command } from "commander";
 import { readFileSync } from "node:fs";
 import { decodeReceipt, decodeCredential } from "../utils/parser.js";
-import { displayReceipt, displayCredential, receiptToJson, credentialToJson } from "../display/receipt.js";
+import {
+  displayReceipt,
+  displayCredential,
+  receiptToJson,
+  credentialToJson,
+} from "../display/receipt.js";
 
 export const validateCommand = new Command("validate")
   .description("Validate a receipt or credential")

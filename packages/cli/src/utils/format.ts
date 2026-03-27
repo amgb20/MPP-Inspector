@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { getTokenSymbol, getChainName, resolveCurrency } from "./chains.js";
+import { getChainName, resolveCurrency } from "./chains.js";
 
 export function truncateAddress(addr: string, start = 6, end = 4): string {
   if (addr.length <= start + end + 3) return addr;
@@ -76,7 +76,11 @@ export function label(key: string, value: string, keyWidth = 16): string {
 }
 
 export function section(title: string, content: string): string {
-  const border = chalk.dim("\u250C\u2500 ") + chalk.bold(title) + " " + chalk.dim("\u2500".repeat(Math.max(0, 55 - title.length)));
+  const border =
+    chalk.dim("\u250C\u2500 ") +
+    chalk.bold(title) +
+    " " +
+    chalk.dim("\u2500".repeat(Math.max(0, 55 - title.length)));
   const bottom = chalk.dim("\u2514" + "\u2500".repeat(60));
   const lines = content
     .split("\n")

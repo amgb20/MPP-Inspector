@@ -1,5 +1,10 @@
 import chalk from "chalk";
-import type { MppReceipt, ReceiptValidation, MppCredential, CredentialValidation } from "../types.js";
+import type {
+  MppReceipt,
+  ReceiptValidation,
+  MppCredential,
+  CredentialValidation,
+} from "../types.js";
 import { check, label, section, formatPaymentMethod } from "../utils/format.js";
 import { truncateAddress } from "../utils/format.js";
 
@@ -7,11 +12,17 @@ export function displayReceipt(receipt: MppReceipt, validation: ReceiptValidatio
   const details = [
     label("Challenge ID:", receipt.challengeId || chalk.dim("(none)")),
     label("Method:", receipt.method ? formatPaymentMethod(receipt.method) : chalk.dim("(none)")),
-    label("Reference:", receipt.reference ? truncateAddress(receipt.reference, 10, 6) : chalk.dim("(none)")),
+    label(
+      "Reference:",
+      receipt.reference ? truncateAddress(receipt.reference, 10, 6) : chalk.dim("(none)"),
+    ),
     label("Status:", receipt.status ? formatStatus(receipt.status) : chalk.dim("(none)")),
     label("Timestamp:", receipt.timestamp || chalk.dim("(none)")),
     receipt.settlement
-      ? label("Settlement:", `${receipt.settlement.amount} ${receipt.settlement.currency.toUpperCase()}`)
+      ? label(
+          "Settlement:",
+          `${receipt.settlement.amount} ${receipt.settlement.currency.toUpperCase()}`,
+        )
       : "",
   ]
     .filter(Boolean)
@@ -20,7 +31,10 @@ export function displayReceipt(receipt: MppReceipt, validation: ReceiptValidatio
   const checks = [
     check(validation.base64Valid, "Base64 decoding valid"),
     check(validation.jsonValid, "JSON structure valid"),
-    check(validation.requiredFieldsPresent, "Required fields present (challengeId, method, reference, status, timestamp)"),
+    check(
+      validation.requiredFieldsPresent,
+      "Required fields present (challengeId, method, reference, status, timestamp)",
+    ),
     check(validation.timestampValid, "Timestamp not in future"),
   ].join("\n");
 
@@ -35,20 +49,36 @@ export function displayReceipt(receipt: MppReceipt, validation: ReceiptValidatio
   console.log();
 }
 
-export function displayCredential(credential: MppCredential, validation: CredentialValidation): void {
+export function displayCredential(
+  credential: MppCredential,
+  validation: CredentialValidation,
+): void {
   const details = [
-    label("Source:", credential.source ? truncateAddress(credential.source, 10, 6) : chalk.dim("(none)")),
+    label(
+      "Source:",
+      credential.source ? truncateAddress(credential.source, 10, 6) : chalk.dim("(none)"),
+    ),
     "",
     chalk.dim("  Challenge:"),
     label("  ID:", credential.challenge.id || chalk.dim("(none)")),
     label("  Realm:", credential.challenge.realm || chalk.dim("(none)")),
-    label("  Method:", credential.challenge.method ? formatPaymentMethod(credential.challenge.method) : chalk.dim("(none)")),
+    label(
+      "  Method:",
+      credential.challenge.method
+        ? formatPaymentMethod(credential.challenge.method)
+        : chalk.dim("(none)"),
+    ),
     label("  Intent:", credential.challenge.intent || chalk.dim("(none)")),
-    credential.challenge.request ? label("  Request:", truncateAddress(credential.challenge.request, 16, 8)) : "",
+    credential.challenge.request
+      ? label("  Request:", truncateAddress(credential.challenge.request, 16, 8))
+      : "",
     "",
     chalk.dim("  Payload:"),
     ...Object.entries(credential.payload).map(([key, value]) =>
-      label(`  ${key}:`, typeof value === "string" ? truncateAddress(String(value), 16, 8) : JSON.stringify(value)),
+      label(
+        `  ${key}:`,
+        typeof value === "string" ? truncateAddress(String(value), 16, 8) : JSON.stringify(value),
+      ),
     ),
   ]
     .filter(Boolean)
@@ -91,6 +121,9 @@ export function receiptToJson(receipt: MppReceipt, validation: ReceiptValidation
   return { receipt, validation };
 }
 
-export function credentialToJson(credential: MppCredential, validation: CredentialValidation): object {
+export function credentialToJson(
+  credential: MppCredential,
+  validation: CredentialValidation,
+): object {
   return { credential, validation };
 }

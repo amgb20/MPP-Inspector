@@ -6,6 +6,7 @@ import {
   formatUsd,
   formatDuration,
   formatExpiry,
+  formatChainName,
   formatPaymentMethod,
   progressBar,
   check,
@@ -98,6 +99,71 @@ describe("formatDuration", () => {
 
   it("handles exact minute boundary", () => {
     expect(formatDuration(60000)).toBe("1m 0s");
+  });
+});
+
+describe("formatExpiry", () => {
+  it("returns 'none' for empty expires", () => {
+    const result = formatExpiry("");
+    expect(result).toContain("none");
+  });
+
+  it("returns 'expired' for past date", () => {
+    const past = new Date(Date.now() - 60_000).toISOString();
+    const result = formatExpiry(past);
+    expect(result).toContain("expired");
+  });
+
+  it("returns remaining time for future date", () => {
+    const future = new Date(Date.now() + 300_000).toISOString(); // 5 minutes
+    const result = formatExpiry(future);
+    expect(result).toContain("remaining");
+    expect(result).toContain("m");
+  });
+
+  it("returns raw string for invalid date", () => {
+    const result = formatExpiry("not-a-date");
+    expect(result).toContain("not-a-date");
+  });
+});
+
+describe("formatChainName", () => {
+  it("returns chain name with ID for known chain", () => {
+    const result = formatChainName(42431);
+    expect(result).toContain("42431");
+  });
+
+  it("returns N/A for undefined", () => {
+    expect(formatChainName(undefined)).toBe("N/A");
+  });
+
+  it("returns N/A for zero", () => {
+    expect(formatChainName(0)).toBe("N/A");
+  });
+
+  it("returns fallback for unknown chain", () => {
+    const result = formatChainName(99999);
+    expect(result).toContain("99999");
+  });
+});
+
+describe("formatPaymentMethod", () => {
+  it("capitalizes known methods", () => {
+    expect(formatPaymentMethod("tempo")).toBe("Tempo");
+    expect(formatPaymentMethod("stripe")).toBe("Stripe");
+    expect(formatPaymentMethod("lightning")).toBe("Lightning");
+    expect(formatPaymentMethod("solana")).toBe("Solana");
+    expect(formatPaymentMethod("card")).toBe("Card");
+    expect(formatPaymentMethod("custom")).toBe("Custom");
+  });
+
+  it("handles case-insensitive input", () => {
+    expect(formatPaymentMethod("TEMPO")).toBe("Tempo");
+    expect(formatPaymentMethod("Stripe")).toBe("Stripe");
+  });
+
+  it("returns raw string for unknown methods", () => {
+    expect(formatPaymentMethod("unknown-method")).toBe("unknown-method");
   });
 });
 

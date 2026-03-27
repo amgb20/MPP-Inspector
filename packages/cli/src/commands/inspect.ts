@@ -24,10 +24,17 @@ export const inspectCommand = new Command("inspect")
 
     if (response.status !== 402) {
       if (options.json) {
-        console.log(JSON.stringify({ error: `Server returned ${response.status}, not 402`, status: response.status }));
+        console.log(
+          JSON.stringify({
+            error: `Server returned ${response.status}, not 402`,
+            status: response.status,
+          }),
+        );
         return;
       }
-      console.log(`\n  ${chalk.yellow("!")} Server returned ${chalk.bold(String(response.status))}, not 402.`);
+      console.log(
+        `\n  ${chalk.yellow("!")} Server returned ${chalk.bold(String(response.status))}, not 402.`,
+      );
       console.log(`  This endpoint may not be MPP-enabled.`);
       if (response.status === 200) {
         console.log(`  The endpoint returned content without requiring payment.`);
@@ -38,10 +45,14 @@ export const inspectCommand = new Command("inspect")
     const wwwAuth = response.headers.get("www-authenticate");
     if (!wwwAuth || !wwwAuth.toLowerCase().startsWith("payment ")) {
       if (options.json) {
-        console.log(JSON.stringify({ error: "402 returned but no WWW-Authenticate: Payment header found" }));
+        console.log(
+          JSON.stringify({ error: "402 returned but no WWW-Authenticate: Payment header found" }),
+        );
         return;
       }
-      console.log(`\n  ${chalk.yellow("!")} 402 returned but no ${chalk.bold("WWW-Authenticate: Payment")} header found.`);
+      console.log(
+        `\n  ${chalk.yellow("!")} 402 returned but no ${chalk.bold("WWW-Authenticate: Payment")} header found.`,
+      );
       console.log("  This may be a standard 402, not MPP.");
       return;
     }
@@ -51,7 +62,9 @@ export const inspectCommand = new Command("inspect")
     const problemDetails = parseProblemDetails(response.body);
 
     if (options.json) {
-      console.log(JSON.stringify(challengeToJson(url, challenge, verification, problemDetails), null, 2));
+      console.log(
+        JSON.stringify(challengeToJson(url, challenge, verification, problemDetails), null, 2),
+      );
     } else {
       displayChallenge(url, challenge, verification, problemDetails);
     }

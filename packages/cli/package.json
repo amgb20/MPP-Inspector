@@ -6,8 +6,12 @@
   "bin": {
     "mpp-inspector": "./dist/bin/mpp-inspector.js"
   },
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
   "files": [
     "dist"
@@ -17,7 +21,10 @@
     "dev": "tsup --watch",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:integration:real": "MPP_REAL_ENDPOINT_TESTS=true vitest run --config vitest.integration.config.ts",
     "lint": "tsc --noEmit",
+    "test:coverage": "vitest run --coverage",
     "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
   "keywords": [
@@ -60,6 +67,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "tsup": "^8.4.0",
     "typescript": "^5.7.3",
     "vitest": "^3.0.9"

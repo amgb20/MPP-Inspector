@@ -5,7 +5,12 @@ import { rawRequest } from "../utils/http.js";
 import { parseChallengeHeader } from "../utils/parser.js";
 import { verifyChallengeFields } from "../utils/crypto.js";
 import { createMppWallet, getBalance, resolvePrivateKey } from "../utils/wallet.js";
-import { displayFlowHeader, displayFlowStep, displayFlowSummary, flowToJson } from "../display/flow.js";
+import {
+  displayFlowHeader,
+  displayFlowStep,
+  displayFlowSummary,
+  flowToJson,
+} from "../display/flow.js";
 import { truncateAddress, formatAmount, formatPaymentMethod } from "../utils/format.js";
 import type { FlowStep } from "../types.js";
 
@@ -22,7 +27,9 @@ export const flowCommand = new Command("flow")
   .action(async (url: string, options) => {
     const privateKey = resolvePrivateKey(options.wallet);
     if (!privateKey && !options.dryRun) {
-      console.error("Error: Provide --wallet <key> or set MPP_PRIVATE_KEY env var (use --dry-run to skip payment)");
+      console.error(
+        "Error: Provide --wallet <key> or set MPP_PRIVATE_KEY env var (use --dry-run to skip payment)",
+      );
       process.exit(1);
     }
 
@@ -46,9 +53,13 @@ export const flowCommand = new Command("flow")
 
     if (response.status !== 402) {
       if (options.json) {
-        console.log(JSON.stringify(flowToJson(steps, { error: `Expected 402, got ${response.status}` })));
+        console.log(
+          JSON.stringify(flowToJson(steps, { error: `Expected 402, got ${response.status}` })),
+        );
       } else {
-        console.log(`\n  ${chalk.red("!")} Expected 402, got ${response.status}. Cannot proceed with flow.`);
+        console.log(
+          `\n  ${chalk.red("!")} Expected 402, got ${response.status}. Cannot proceed with flow.`,
+        );
       }
       return;
     }
@@ -80,9 +91,7 @@ export const flowCommand = new Command("flow")
     const chainId = options.testnet ? 4218 : (req?.chainId ?? 4217);
 
     if (options.dryRun) {
-      const costDesc = req?.amount
-        ? formatAmount(req.amount, req.currency)
-        : "unknown";
+      const costDesc = req?.amount ? formatAmount(req.amount, req.currency) : "unknown";
 
       steps.push({
         name: "Sign transaction (dry-run)",
@@ -177,7 +186,11 @@ export const flowCommand = new Command("flow")
       };
       console.log(JSON.stringify(flowToJson(steps, summary), null, 2));
     } else if (options.dryRun) {
-      displayFlowHeader(url, options.wallet ? truncateAddress(options.wallet) : "(dry-run)", undefined);
+      displayFlowHeader(
+        url,
+        options.wallet ? truncateAddress(options.wallet) : "(dry-run)",
+        undefined,
+      );
       for (let i = 0; i < steps.length; i++) {
         displayFlowStep(steps[i], i, steps.length);
       }

@@ -12,12 +12,34 @@
     "dev": "npm run dev --workspace=packages/cli",
     "dev:plugin": "npm run dev --workspace=packages/plugin",
     "test": "npm run test --workspace=packages/cli",
+    "test:integration": "npm run test:integration --workspace=packages/cli",
+    "test:integration:real": "npm run test:integration:real --workspace=packages/cli",
     "lint": "npm run lint --workspace=packages/cli",
     "check": "npm run lint && npm run test && npm run build",
+    "lint:eslint": "eslint packages/*/src/**/*.ts",
+    "format": "prettier --write \"packages/*/src/**/*.ts\"",
+    "format:check": "prettier --check \"packages/*/src/**/*.ts\"",
+    "test:coverage": "npm run test:coverage --workspace=packages/cli",
+    "prepare": "husky",
     "mock": "npm run start --workspace=packages/mock-server",
     "demo": "echo 'Start the mock server first: npm run mock' && echo 'Then in another terminal:' && echo '  npx mpp-inspector inspect http://localhost:3402/v1/query' && echo '  npx mpp-inspector scan localhost:3402'"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1",
+    "typescript-eslint": "^8.57.2"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }

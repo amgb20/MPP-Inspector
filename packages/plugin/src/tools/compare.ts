@@ -82,8 +82,6 @@ export async function comparePricing(input: CompareInput): Promise<object> {
 
   return {
     ...compareToJson(results),
-    summary: cheapest
-      ? { cheapest: cheapest.service, price: cheapest.price }
-      : { cheapest: null },
+    summary: cheapest ? { cheapest: cheapest.service, price: cheapest.price } : { cheapest: null },
   };
 }

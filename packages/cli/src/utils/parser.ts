@@ -11,14 +11,7 @@ import type {
   CredentialValidation,
 } from "../types.js";
 
-const KNOWN_CHALLENGE_FIELDS = new Set([
-  "id",
-  "realm",
-  "method",
-  "intent",
-  "expires",
-  "request",
-]);
+const KNOWN_CHALLENGE_FIELDS = new Set(["id", "realm", "method", "intent", "expires", "request"]);
 
 // Legacy field names from our old format — mapped to spec equivalents
 const LEGACY_FIELD_MAP: Record<string, string> = {
@@ -94,7 +87,11 @@ function decodeRequestParam(encoded: string): MppRequestParams | null {
     // The real protocol nests chainId inside methodDetails for tempo
     // e.g. { amount, currency, recipient, methodDetails: { chainId: 42431, feePayer: true } }
     // Hoist chainId to top level for convenience if not already present
-    if (!result.chainId && typeof result.methodDetails === "object" && result.methodDetails !== null) {
+    if (
+      !result.chainId &&
+      typeof result.methodDetails === "object" &&
+      result.methodDetails !== null
+    ) {
       const md = result.methodDetails as Record<string, unknown>;
       if (typeof md.chainId === "number") {
         return { ...result, chainId: md.chainId };
@@ -146,7 +143,12 @@ export function parseChallengeHeader(raw: string): MppChallenge {
   const allKnownFields = new Set([
     ...KNOWN_CHALLENGE_FIELDS,
     ...Object.keys(LEGACY_FIELD_MAP),
-    "amount", "currency", "recipient", "chainId", "signature", "description",
+    "amount",
+    "currency",
+    "recipient",
+    "chainId",
+    "signature",
+    "description",
   ]);
   for (const [key, value] of Object.entries(params)) {
     if (!allKnownFields.has(key)) {
@@ -208,7 +210,10 @@ export function parseProblemDetails(body: string): MppProblemDetails | null {
 
 // --- Receipt decoder (spec-compliant) ---
 
-export function decodeReceipt(input: string): { receipt: MppReceipt; validation: ReceiptValidation } {
+export function decodeReceipt(input: string): {
+  receipt: MppReceipt;
+  validation: ReceiptValidation;
+} {
   const errors: string[] = [];
   let base64Valid = false;
   let jsonValid = false;
@@ -262,11 +267,12 @@ export function decodeReceipt(input: string): { receipt: MppReceipt; validation:
   const method = typeof parsed.method === "string" ? parsed.method : "";
   const reference = typeof parsed.reference === "string" ? parsed.reference : "";
   const status = typeof parsed.status === "string" ? parsed.status : "";
-  const timestamp = typeof parsed.timestamp === "string"
-    ? parsed.timestamp
-    : typeof parsed.timestamp === "number"
-      ? new Date(parsed.timestamp * 1000).toISOString()
-      : "";
+  const timestamp =
+    typeof parsed.timestamp === "string"
+      ? parsed.timestamp
+      : typeof parsed.timestamp === "number"
+        ? new Date(parsed.timestamp * 1000).toISOString()
+        : "";
 
   let settlement: MppSettlement | null = null;
   if (typeof parsed.settlement === "object" && parsed.settlement !== null) {
@@ -282,7 +288,8 @@ export function decodeReceipt(input: string): { receipt: MppReceipt; validation:
   const hasLegacyFields = "receiptId" in parsed || "credential" in parsed;
   const hasSpecFields = !!reference && !!status;
   if (hasLegacyFields && !hasSpecFields) {
-    const legacyChallengeId = challengeId || (typeof parsed.receiptId === "string" ? parsed.receiptId : "");
+    const legacyChallengeId =
+      challengeId || (typeof parsed.receiptId === "string" ? parsed.receiptId : "");
     const legacyAmount = typeof parsed.amount === "string" ? parsed.amount : "";
     const legacyCredential = typeof parsed.credential === "string" ? parsed.credential : "";
 
@@ -297,7 +304,17 @@ export function decodeReceipt(input: string): { receipt: MppReceipt; validation:
       if (!timestampValid) errors.push("Timestamp is in the future");
     }
 
-    const knownKeys = new Set(["receiptId", "timestamp", "credential", "challengeId", "amount", "method", "reference", "settlement", "status"]);
+    const knownKeys = new Set([
+      "receiptId",
+      "timestamp",
+      "credential",
+      "challengeId",
+      "amount",
+      "method",
+      "reference",
+      "settlement",
+      "status",
+    ]);
     const extra: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(parsed)) {
       if (!knownKeys.has(key)) extra[key] = value;
@@ -333,7 +350,14 @@ export function decodeReceipt(input: string): { receipt: MppReceipt; validation:
     if (isNaN(ts)) errors.push("Invalid timestamp format");
   }
 
-  const knownKeys = new Set(["challengeId", "method", "reference", "settlement", "status", "timestamp"]);
+  const knownKeys = new Set([
+    "challengeId",
+    "method",
+    "reference",
+    "settlement",
+    "status",
+    "timestamp",
+  ]);
   const extra: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(parsed)) {
     if (!knownKeys.has(key)) extra[key] = value;
@@ -347,7 +371,10 @@ export function decodeReceipt(input: string): { receipt: MppReceipt; validation:
 
 // --- Credential decoder ---
 
-export function decodeCredential(input: string): { credential: MppCredential; validation: CredentialValidation } {
+export function decodeCredential(input: string): {
+  credential: MppCredential;
+  validation: CredentialValidation;
+} {
   const errors: string[] = [];
   let base64Valid = false;
   let jsonValid = false;
@@ -375,7 +402,15 @@ export function decodeCredential(input: string): { credential: MppCredential; va
       errors.push("Invalid base64 encoding");
       return {
         credential: emptyCredential,
-        validation: { base64Valid, jsonValid, structureValid, challengePresent, sourcePresent, payloadPresent, errors },
+        validation: {
+          base64Valid,
+          jsonValid,
+          structureValid,
+          challengePresent,
+          sourcePresent,
+          payloadPresent,
+          errors,
+        },
       };
     }
   }
@@ -396,7 +431,15 @@ export function decodeCredential(input: string): { credential: MppCredential; va
       errors.push("Invalid JSON structure");
       return {
         credential: emptyCredential,
-        validation: { base64Valid, jsonValid, structureValid, challengePresent, sourcePresent, payloadPresent, errors },
+        validation: {
+          base64Valid,
+          jsonValid,
+          structureValid,
+          challengePresent,
+          sourcePresent,
+          payloadPresent,
+          errors,
+        },
       };
     }
   }
@@ -422,9 +465,10 @@ export function decodeCredential(input: string): { credential: MppCredential; va
     request: typeof ch.request === "string" ? ch.request : "",
   };
 
-  const payload = typeof parsed.payload === "object" && parsed.payload !== null
-    ? (parsed.payload as Record<string, unknown>)
-    : {};
+  const payload =
+    typeof parsed.payload === "object" && parsed.payload !== null
+      ? (parsed.payload as Record<string, unknown>)
+      : {};
 
   return {
     credential: {
@@ -433,7 +477,15 @@ export function decodeCredential(input: string): { credential: MppCredential; va
       payload,
       raw: input,
     },
-    validation: { base64Valid, jsonValid, structureValid, challengePresent, sourcePresent, payloadPresent, errors },
+    validation: {
+      base64Valid,
+      jsonValid,
+      structureValid,
+      challengePresent,
+      sourcePresent,
+      payloadPresent,
+      errors,
+    },
   };
 }
 
@@ -452,7 +504,12 @@ export function parseMppManifest(json: unknown): MppManifest {
     .map((e) => ({
       method: typeof e.method === "string" ? e.method : "GET",
       path: typeof e.path === "string" ? e.path : String(e.path ?? ""),
-      price: typeof e.price === "string" ? e.price : typeof e.price === "number" ? String(e.price) : undefined,
+      price:
+        typeof e.price === "string"
+          ? e.price
+          : typeof e.price === "number"
+            ? String(e.price)
+            : undefined,
       description: typeof e.description === "string" ? e.description : undefined,
       intent: typeof e.intent === "string" ? e.intent : undefined,
       currency: typeof e.currency === "string" ? e.currency : undefined,
