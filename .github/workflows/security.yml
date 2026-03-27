@@ -1,0 +1,35 @@
+name: Security Review
+
+permissions:
+  pull-requests: write
+  contents: read
+
+on:
+  pull_request:
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 2
+      
+      - uses: anthropics/claude-code-security-review@main
+        with:
+          comment-pr: true
+          claude-api-key: ${{ secrets.CLAUDE_API_KEY }}
+          claude-model: claude-opus-4-6
+
+      - name: Fail on high severity findings
+        if: always()
+        run: |
+          if [ -f findings.json ] && jq -e '[.[] | select(.severity == "HIGH")] | length > 0' findings.json > /dev/null 2>&1; then
+            count=$(jq '[.[] | select(.severity == "HIGH")] | length' findings.json)
+            echo "::error::Security review found $count HIGH severity finding(s)"
+            jq -r '.[] | select(.severity == "HIGH") | "  - [\(.category)] \(.file):\(.line) — \(.description[:120])..."' findings.json
+            exit 1
+          else
+            echo "No HIGH severity findings detected."
+          fi
