@@ -1,6 +1,6 @@
 {
   "name": "@mpp-inspector/plugin",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "MCP server and Claude Code plugin for Machine Payments Protocol inspection",
   "type": "module",
   "bin": {
@@ -42,7 +42,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
     "zod": "^3.25.23",
-    "mpp-inspector": "0.1.1"
+    "mpp-inspector": "0.1.2"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
