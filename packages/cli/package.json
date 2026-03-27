@@ -22,7 +22,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:integration": "vitest run --config vitest.integration.config.ts",
-    "test:integration:real": "MPP_REAL_ENDPOINT_TESTS=true vitest run --config vitest.integration.config.ts",
+    "test:integration:real": "MPP_REAL_ENDPOINT_TESTS=true vitest run --config vitest.integration.config.ts src/__tests__/integration/real-endpoint.test.ts",
     "lint": "tsc --noEmit",
     "test:coverage": "vitest run --coverage",
     "prepublishOnly": "npm run lint && npm run test && npm run build"
