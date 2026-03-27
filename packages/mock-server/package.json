@@ -1,6 +1,6 @@
 {
   "name": "@mpp-inspector/mock-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Mock MPP server for testing and demoing mpp-inspector",
   "type": "module",
   "bin": {
