@@ -25,7 +25,7 @@
     "demo": "echo 'Start the mock server first: npm run mock' && echo 'Then in another terminal:' && echo '  npx mpp-inspector inspect http://localhost:3402/v1/query' && echo '  npx mpp-inspector scan localhost:3402'"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
