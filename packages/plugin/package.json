@@ -34,7 +34,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AlexandreBenoit/mpp-inspector.git",
+    "url": "https://github.com/amgb20/MPP-Inspector.git",
     "directory": "packages/plugin"
   },
   "engines": {

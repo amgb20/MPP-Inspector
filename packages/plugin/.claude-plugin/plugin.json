@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "author": {
     "name": "MPP Inspector Contributors",
-    "url": "https://github.com/AlexandreBenoit/mpp-inspector"
+    "url": "https://github.com/amgb20/MPP-Inspector"
   },
-  "repository": "https://github.com/AlexandreBenoit/mpp-inspector",
-  "homepage": "https://github.com/AlexandreBenoit/mpp-inspector#readme",
+  "repository": "https://github.com/amgb20/MPP-Inspector",
+  "homepage": "https://github.com/amgb20/MPP-Inspector#readme",
   "license": "MIT",
   "keywords": [
     "mpp",

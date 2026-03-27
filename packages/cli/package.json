@@ -46,12 +46,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AlexandreBenoit/mpp-inspector.git",
+    "url": "https://github.com/amgb20/MPP-Inspector.git",
     "directory": "packages/cli"
   },
-  "homepage": "https://github.com/AlexandreBenoit/mpp-inspector#readme",
+  "homepage": "https://github.com/amgb20/MPP-Inspector#readme",
   "bugs": {
-    "url": "https://github.com/AlexandreBenoit/mpp-inspector/issues"
+    "url": "https://github.com/amgb20/MPP-Inspector/issues"
   },
   "engines": {
     "node": ">=20.0.0"

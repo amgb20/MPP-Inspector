@@ -11,7 +11,7 @@ Thanks for your interest in contributing. This guide covers the setup, workflow,
 ## Setup
 
 ```bash
-git clone https://github.com/AlexandreBenoit/mpp-inspector.git
+git clone https://github.com/amgb20/MPP-Inspector.git
 cd mpp-inspector
 npm install
 npm run build
