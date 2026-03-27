@@ -14,9 +14,10 @@ export const scanCommand = new Command("scan")
   .option("--timeout <ms>", "Request timeout in milliseconds", "10000")
   .action(async (domain: string, options) => {
     const cleanDomain = domain.replace(/^https?:\/\//, "").replace(/\/+$/, "");
-    const baseUrl = cleanDomain.includes("localhost") || cleanDomain.includes("127.0.0.1")
-      ? `http://${cleanDomain}`
-      : `https://${cleanDomain}`;
+    const baseUrl =
+      cleanDomain.includes("localhost") || cleanDomain.includes("127.0.0.1")
+        ? `http://${cleanDomain}`
+        : `https://${cleanDomain}`;
     const endpoints: MppEndpoint[] = [];
     const timeout = parseInt(options.timeout);
 
@@ -29,7 +30,9 @@ export const scanCommand = new Command("scan")
     try {
       const { data, status } = await fetchJson(`${baseUrl}/.well-known/mpp.json`, timeout);
       if (status === 200 && data) {
-        manifestSpinner?.succeed(`  Checking /.well-known/mpp.json     ${chalk.green("\u2713 Found")}`);
+        manifestSpinner?.succeed(
+          `  Checking /.well-known/mpp.json     ${chalk.green("\u2713 Found")}`,
+        );
         const manifest = parseMppManifest(data);
         for (const ep of manifest.endpoints) {
           endpoints.push(ep);
@@ -59,9 +62,13 @@ export const scanCommand = new Command("scan")
     try {
       const response = await rawRequest(`${baseUrl}/health`, { timeout });
       if (response.status === 200) {
-        healthSpinner?.succeed(`  Checking /health                   ${chalk.green("\u2713 200 OK")}`);
+        healthSpinner?.succeed(
+          `  Checking /health                   ${chalk.green("\u2713 200 OK")}`,
+        );
       } else {
-        healthSpinner?.info(`  Checking /health                   ${chalk.dim(String(response.status))}`);
+        healthSpinner?.info(
+          `  Checking /health                   ${chalk.dim(String(response.status))}`,
+        );
       }
     } catch {
       healthSpinner?.fail(`  Checking /health                   ${chalk.dim("Error")}`);
@@ -69,10 +76,7 @@ export const scanCommand = new Command("scan")
 
     // Probe common API paths
     if (options.probe) {
-      const probePaths = [
-        "/v1/", "/api/", "/api/v1/",
-        "/v1/search", "/v1/data", "/v1/query",
-      ];
+      const probePaths = ["/v1/", "/api/", "/api/v1/", "/v1/search", "/v1/data", "/v1/query"];
 
       for (const path of probePaths) {
         try {

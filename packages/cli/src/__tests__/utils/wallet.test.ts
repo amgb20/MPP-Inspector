@@ -1,5 +1,10 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { resolvePrivateKey, createMppWallet, NonceManager } from "../../utils/wallet.js";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import {
+  resolvePrivateKey,
+  createMppWallet,
+  getBalance,
+  NonceManager,
+} from "../../utils/wallet.js";
 
 describe("resolvePrivateKey", () => {
   const originalEnv = process.env.MPP_PRIVATE_KEY;
@@ -53,6 +58,32 @@ describe("createMppWallet", () => {
   });
 });
 
+describe("getBalance", () => {
+  it("returns formatted balance on success", async () => {
+    const fakeWallet = {
+      publicClient: {
+        getBalance: vi.fn().mockResolvedValue(1000000000000000000n), // 1 ETH in wei
+      },
+      account: { address: "0x1234" },
+    } as any;
+
+    const result = await getBalance(fakeWallet);
+    expect(result).toBe("1");
+  });
+
+  it("returns 'unknown' when getBalance throws", async () => {
+    const fakeWallet = {
+      publicClient: {
+        getBalance: vi.fn().mockRejectedValue(new Error("network error")),
+      },
+      account: { address: "0x1234" },
+    } as any;
+
+    const result = await getBalance(fakeWallet);
+    expect(result).toBe("unknown");
+  });
+});
+
 describe("NonceManager", () => {
   it("increments nonce on sequential calls", async () => {
     const mockGetTransactionCount = vi.fn().mockResolvedValue(5);
@@ -72,6 +103,37 @@ describe("NonceManager", () => {
     expect(n1).toBe(5);
     expect(n2).toBe(6);
     expect(n3).toBe(7);
+    expect(mockGetTransactionCount).toHaveBeenCalledOnce();
+  });
+
+  it("queues concurrent callers while fetching initial nonce", async () => {
+    let resolveFetch: (value: number) => void;
+    const fetchPromise = new Promise<number>((resolve) => {
+      resolveFetch = resolve;
+    });
+    const mockGetTransactionCount = vi.fn().mockReturnValue(fetchPromise);
+    const fakeWallet = {
+      publicClient: {
+        getTransactionCount: mockGetTransactionCount,
+      },
+      account: { address: "0x1234" },
+    } as any;
+
+    const manager = new NonceManager(fakeWallet);
+
+    // Start 3 concurrent acquireNonce calls
+    const p1 = manager.acquireNonce();
+    const p2 = manager.acquireNonce();
+    const p3 = manager.acquireNonce();
+
+    // Resolve the initial fetch
+    resolveFetch!(10);
+
+    const [n1, n2, n3] = await Promise.all([p1, p2, p3]);
+
+    // Pending waiters (p2, p3) get nonces first (10, 11), then p1 gets 12
+    const nonces = [n1, n2, n3].sort((a, b) => a - b);
+    expect(nonces).toEqual([10, 11, 12]);
     expect(mockGetTransactionCount).toHaveBeenCalledOnce();
   });
 });

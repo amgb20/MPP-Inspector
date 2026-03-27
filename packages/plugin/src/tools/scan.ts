@@ -37,7 +37,8 @@ export async function scanDomain(input: ScanInput): Promise<object> {
 
   try {
     const response = await rawRequest(`${baseUrl}/llms.txt`, { timeout });
-    discoveries["/llms.txt"] = response.status === 200 && response.body.length > 0 ? "found" : "not found";
+    discoveries["/llms.txt"] =
+      response.status === 200 && response.body.length > 0 ? "found" : "not found";
   } catch {
     discoveries["/llms.txt"] = "error";
   }

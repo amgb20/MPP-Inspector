@@ -13,7 +13,10 @@
       "WebFetch(domain:www.npmjs.com)",
       "WebFetch(domain:docs.stripe.com)",
       "Bash(npx vitest:*)",
-      "Bash(mpp-inspector flow:*)"
+      "Bash(mpp-inspector flow:*)",
+      "Bash(npx husky:*)",
+      "Bash(MPP_REAL_ENDPOINT_TESTS=true npm run test:integration)",
+      "Bash(ls C:/Users/AlexandreBenoit/Documents/Personal/MPP-Inspector/eslint.config.*)"
     ]
   }
 }

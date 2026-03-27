@@ -24,6 +24,7 @@
   <a href="https://www.tempo.xyz"><img src="https://img.shields.io/badge/chain-Tempo_(42431)-00e5ff?style=flat-square&labelColor=0d1117" alt="chain" /></a>
   <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/402"><img src="https://img.shields.io/badge/HTTP-402_Payment_Required-00e5ff?style=flat-square&labelColor=0d1117" alt="402" /></a>
   <a href="https://github.com/AlexandreBenoit/mpp-inspector/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/AlexandreBenoit/mpp-inspector/ci.yml?style=flat-square&labelColor=0d1117&color=00e5ff&label=CI" alt="CI" /></a>
+  <a href="#testing"><img src="https://img.shields.io/badge/coverage-80%25+-00e5ff?style=flat-square&labelColor=0d1117" alt="coverage" /></a>
 </p>
 
 <br />

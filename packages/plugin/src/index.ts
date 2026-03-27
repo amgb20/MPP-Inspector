@@ -40,7 +40,10 @@ server.tool(
   "Discover MPP endpoints on a domain by checking /.well-known/mpp.json, /llms.txt, /health, and optionally probing common API paths.",
   {
     domain: z.string().describe("Domain to scan (e.g. findata.example.com)"),
-    probe: z.boolean().default(false).describe("Also probe common API paths with HEAD requests to find 402 endpoints"),
+    probe: z
+      .boolean()
+      .default(false)
+      .describe("Also probe common API paths with HEAD requests to find 402 endpoints"),
     timeout: z.number().default(10000).describe("Request timeout in milliseconds"),
   },
   async (input) => {

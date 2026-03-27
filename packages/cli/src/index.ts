@@ -49,7 +49,13 @@ export {
   isBlockchainMethod,
   resolveCurrency,
 } from "./utils/chains.js";
-export { truncateAddress, formatAmount, formatUsd, formatExpiry, formatPaymentMethod } from "./utils/format.js";
+export {
+  truncateAddress,
+  formatAmount,
+  formatUsd,
+  formatExpiry,
+  formatPaymentMethod,
+} from "./utils/format.js";
 
 export { challengeToJson } from "./display/challenge.js";
 export { receiptToJson, credentialToJson } from "./display/receipt.js";

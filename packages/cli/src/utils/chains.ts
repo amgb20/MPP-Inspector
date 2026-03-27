@@ -84,10 +84,22 @@ export interface PaymentMethodInfo {
 const PAYMENT_METHOD_INFO: Record<string, PaymentMethodInfo> = {
   tempo: { name: "Tempo", description: "Tempo blockchain stablecoin payments", blockchain: true },
   stripe: { name: "Stripe", description: "SPT-based card payments via Stripe", blockchain: false },
-  lightning: { name: "Lightning", description: "Bitcoin via Lightning Network (BOLT11)", blockchain: true },
+  lightning: {
+    name: "Lightning",
+    description: "Bitcoin via Lightning Network (BOLT11)",
+    blockchain: true,
+  },
   solana: { name: "Solana", description: "SOL + SPL token payments", blockchain: true },
-  card: { name: "Card", description: "Encrypted network tokens (Visa Intelligent Commerce)", blockchain: false },
-  custom: { name: "Custom", description: "Custom payment rail via Method.from()", blockchain: false },
+  card: {
+    name: "Card",
+    description: "Encrypted network tokens (Visa Intelligent Commerce)",
+    blockchain: false,
+  },
+  custom: {
+    name: "Custom",
+    description: "Custom payment rail via Method.from()",
+    blockchain: false,
+  },
 };
 
 export function getPaymentMethodInfo(method: string): PaymentMethodInfo | undefined {

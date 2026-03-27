@@ -29,11 +29,7 @@ function detectMpp(): boolean {
   if (existsSync(join(cwd, ".well-known", "mpp.json"))) return true;
   if (existsSync(join(cwd, "public", ".well-known", "mpp.json"))) return true;
 
-  const filesToCheck = [
-    "package.json",
-    "README.md",
-    "llms.txt",
-  ];
+  const filesToCheck = ["package.json", "README.md", "llms.txt"];
 
   for (const file of filesToCheck) {
     if (checkFile(join(cwd, file))) return true;

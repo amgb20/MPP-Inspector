@@ -2,7 +2,10 @@ import { describe, it, expect } from "vitest";
 import { verifyChallengeFields } from "../../utils/crypto.js";
 import type { MppChallenge, MppRequestParams } from "../../types.js";
 
-function makeChallenge(overrides: Partial<MppChallenge> = {}, reqOverrides: Partial<MppRequestParams> = {}): MppChallenge {
+function makeChallenge(
+  overrides: Partial<MppChallenge> = {},
+  reqOverrides: Partial<MppRequestParams> = {},
+): MppChallenge {
   const requestDecoded: MppRequestParams = {
     amount: "0.001",
     currency: "usd",
@@ -102,5 +105,47 @@ describe("verifyChallengeFields", () => {
       ),
     );
     expect(result.errors.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("reports error for invalid expires format", () => {
+    const result = verifyChallengeFields(makeChallenge({ expires: "not-a-date" }));
+    expect(result.expiryValid).toBe(false);
+    expect(result.errors.some((e) => e.includes("Invalid expires format"))).toBe(true);
+  });
+
+  it("reports error for missing expires field", () => {
+    const result = verifyChallengeFields(makeChallenge({ expires: "" }));
+    expect(result.expiryValid).toBe(false);
+    expect(result.errors.some((e) => e.includes("Missing expires"))).toBe(true);
+  });
+
+  it("reports error for missing payment method", () => {
+    const result = verifyChallengeFields(makeChallenge({ method: "" }));
+    expect(result.methodKnown).toBe(false);
+    expect(result.errors.some((e) => e.includes("Missing payment method"))).toBe(true);
+  });
+
+  it("treats amount as parseable when request exists but amount is missing", () => {
+    const result = verifyChallengeFields(
+      makeChallenge({ request: "some-base64-data" }, { amount: undefined }),
+    );
+    expect(result.amountParseable).toBe(true);
+  });
+
+  it("returns currencyKnown true for hex address (resolved to truncated display)", () => {
+    // An unknown hex token address still resolves (truncated), so currencyKnown = true
+    const unknownToken = "0x" + "ab".repeat(40);
+    const result = verifyChallengeFields(makeChallenge({}, { currency: unknownToken }));
+    expect(result.currencyKnown).toBe(true);
+  });
+
+  it("returns currencyKnown null when currency is absent", () => {
+    const result = verifyChallengeFields(makeChallenge({}, { currency: undefined }));
+    expect(result.currencyKnown).toBeNull();
+  });
+
+  it("returns currencyKnown true for known fiat currency", () => {
+    const result = verifyChallengeFields(makeChallenge({}, { currency: "usd" }));
+    expect(result.currencyKnown).toBe(true);
   });
 });

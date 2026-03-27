@@ -34,11 +34,14 @@ export const sessionCommand = new Command("session")
     if (!options.json) {
       console.log(
         "\n" +
-          boxen(`  ${chalk.bold("MPP Session Test")}\n  ${chalk.dim("Testing payment channel lifecycle")}`, {
-            padding: { top: 0, bottom: 0, left: 1, right: 1 },
-            borderStyle: "round",
-            borderColor: "cyan",
-          }),
+          boxen(
+            `  ${chalk.bold("MPP Session Test")}\n  ${chalk.dim("Testing payment channel lifecycle")}`,
+            {
+              padding: { top: 0, bottom: 0, left: 1, right: 1 },
+              borderStyle: "round",
+              borderColor: "cyan",
+            },
+          ),
       );
     }
 
@@ -59,8 +62,12 @@ export const sessionCommand = new Command("session")
 
     if (challenge.intent !== "session") {
       if (!options.json) {
-        console.log(`\n  ${chalk.yellow("!")} Endpoint uses "${challenge.intent}" intent, not "session".`);
-        console.log(`  Session channels require intent="session". This endpoint uses one-time charges.`);
+        console.log(
+          `\n  ${chalk.yellow("!")} Endpoint uses "${challenge.intent}" intent, not "session".`,
+        );
+        console.log(
+          `  Session channels require intent="session". This endpoint uses one-time charges.`,
+        );
         console.log(`  Simulating session behavior with repeated charges instead.\n`);
       }
     }
@@ -71,7 +78,9 @@ export const sessionCommand = new Command("session")
     const step1Time = performance.now() - step1Start;
 
     if (!options.json) {
-      console.log(`\n  ${chalk.green("\u2713")} ${chalk.bold("Step 1")} \u2500 Open channel  ${chalk.dim(`[${formatDuration(step1Time)}]`)}`);
+      console.log(
+        `\n  ${chalk.green("\u2713")} ${chalk.bold("Step 1")} \u2500 Open channel  ${chalk.dim(`[${formatDuration(step1Time)}]`)}`,
+      );
       console.log(`    Deposit: ${deposit} \u2192 escrow contract`);
       console.log(`    Wallet: ${truncateAddress(wallet.address)} (balance: ${balance})`);
     }
@@ -119,7 +128,9 @@ export const sessionCommand = new Command("session")
     const step3Time = performance.now() - step3Start;
 
     if (!options.json) {
-      console.log(`\n  ${chalk.green("\u2713")} ${chalk.bold("Step 3")} \u2500 Close channel  ${chalk.dim(`[${formatDuration(step3Time)}]`)}`);
+      console.log(
+        `\n  ${chalk.green("\u2713")} ${chalk.bold("Step 3")} \u2500 Close channel  ${chalk.dim(`[${formatDuration(step3Time)}]`)}`,
+      );
       console.log(`    Final settlement: ${deposit} to recipient`);
     }
 

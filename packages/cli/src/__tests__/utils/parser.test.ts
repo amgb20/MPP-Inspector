@@ -1,9 +1,15 @@
 import { describe, it, expect } from "vitest";
-import { parseAuthParams, parseChallengeHeader, decodeReceipt, parseMppManifest, decodeCredential } from "../../utils/parser.js";
+import {
+  parseAuthParams,
+  parseChallengeHeader,
+  decodeReceipt,
+  parseMppManifest,
+  decodeCredential,
+} from "../../utils/parser.js";
 
 describe("parseAuthParams", () => {
   it("parses simple key=value pairs", () => {
-    const result = parseAuthParams('intent=charge, amount=0.001');
+    const result = parseAuthParams("intent=charge, amount=0.001");
     expect(result).toEqual({ intent: "charge", amount: "0.001" });
   });
 
@@ -221,6 +227,29 @@ describe("decodeReceipt — spec-compliant format", () => {
   });
 });
 
+describe("decodeReceipt — numeric timestamp", () => {
+  function encode(obj: Record<string, unknown>): string {
+    return Buffer.from(JSON.stringify(obj)).toString("base64url");
+  }
+
+  it("converts numeric timestamp to ISO string", () => {
+    const unixSeconds = Math.floor(Date.now() / 1000) - 10;
+    const input = encode({
+      challengeId: "ch-num",
+      method: "tempo",
+      reference: "0xref",
+      settlement: { amount: "500", currency: "usd" },
+      status: "success",
+      timestamp: unixSeconds,
+    });
+    const { receipt, validation } = decodeReceipt(input);
+
+    expect(validation.timestampValid).toBe(true);
+    expect(receipt.timestamp).toContain("T"); // ISO 8601 format
+    expect(receipt.timestamp).toContain("Z");
+  });
+});
+
 describe("decodeCredential", () => {
   function encode(obj: Record<string, unknown>): string {
     return Buffer.from(JSON.stringify(obj)).toString("base64url");
@@ -228,7 +257,13 @@ describe("decodeCredential", () => {
 
   it("decodes a valid spec-compliant credential", () => {
     const input = encode({
-      challenge: { id: "ch1", realm: "example.com", method: "tempo", intent: "charge", request: "base64data" },
+      challenge: {
+        id: "ch1",
+        realm: "example.com",
+        method: "tempo",
+        intent: "charge",
+        request: "base64data",
+      },
       source: "0x1234567890abcdef",
       payload: { signature: "0xsig" },
     });
@@ -276,6 +311,38 @@ describe("decodeCredential", () => {
     const { validation } = decodeCredential(raw);
     expect(validation.jsonValid).toBe(true);
     expect(validation.structureValid).toBe(true);
+  });
+
+  it("returns invalid base64 error for totally invalid input", () => {
+    // A string that isn't valid base64 AND isn't valid JSON
+    const { validation } = decodeCredential("!!!not-base64-not-json!!!");
+    expect(validation.jsonValid).toBe(false);
+    expect(validation.errors.some((e) => e.includes("Invalid JSON"))).toBe(true);
+  });
+
+  it("handles base64 that decodes to non-JSON and raw is also not JSON", () => {
+    // Valid base64 but decodes to non-JSON, and the raw input is also not JSON
+    const notJson = Buffer.from("this is not json").toString("base64url");
+    const { validation } = decodeCredential(notJson);
+    expect(validation.base64Valid).toBe(true);
+    expect(validation.jsonValid).toBe(false);
+    expect(validation.errors.some((e) => e.includes("Invalid JSON"))).toBe(true);
+  });
+
+  it("handles base64 that decodes to JSON array (not object — but Array is typeof object)", () => {
+    const arrayJson = Buffer.from("[1,2,3]").toString("base64url");
+    const { credential, validation } = decodeCredential(arrayJson);
+    // Arrays pass typeof "object" check, so jsonValid = true, but structure is invalid
+    expect(validation.jsonValid).toBe(true);
+    expect(validation.structureValid).toBe(false);
+    expect(credential.challenge.id).toBe("");
+  });
+
+  it("returns empty credential structure on all failures", () => {
+    const { credential } = decodeCredential("garbage");
+    expect(credential.challenge.id).toBe("");
+    expect(credential.source).toBe("");
+    expect(credential.raw).toBe("garbage");
   });
 });
 
