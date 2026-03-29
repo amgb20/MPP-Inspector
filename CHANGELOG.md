@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-03-29
+
+### Added
+
+- README: table of contents with links to all sections
+- README: "Quick Installation & Start" section at the top with three paths (npm, mock server, Claude Code plugin)
+- README: testing section with test suite counts and CI info
+- Claude Code plugin: inline hooks in plugin.json (fixes numbered hooks display bug)
+
+### Fixed
+
+- Claude Code plugin: hooks now display correctly as "SessionStart" instead of "0, 1, 2, ..."
+
 ## [0.1.1] - 2026-03-27
 
 ### Fixed

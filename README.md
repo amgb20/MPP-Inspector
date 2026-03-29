@@ -45,6 +45,69 @@
 
 ---
 
+## Table of Contents
+
+- [Quick Installation & Start](#-quick-installation--start)
+- [About](#-whoami)
+- [Commands](#-mpp-inspector---help)
+- [Payment Methods](#-payment_methods)
+- [Why This Exists](#-the_gap)
+- [Quickstart Guide](#-quickstart)
+- [Why Not curl?](#-why-not-curl)
+- [Protocol Flow](#-protocol_flow)
+- [Examples](#-examples)
+- [Architecture](#-architecture)
+- [Internals](#-internals)
+- [AI Integration (Claude Code / Cursor)](#-ai_integration)
+- [Testing](#-testing)
+- [Tech Stack](#-stack)
+- [Environment Variables](#-env)
+- [Supported Chains](#-chains)
+- [Development](#-dev)
+- [Roadmap](#-roadmap)
+- [License](#-license)
+
+---
+
+<br />
+
+## Quick Installation & Start
+
+```bash
+# Install globally (recommended)
+npm install -g mpp-inspector
+
+# Or run any command without installing
+npx mpp-inspector <command>
+```
+
+**Test against the live MPP endpoint right now:**
+
+```bash
+mpp-inspector inspect https://mpp.dev/api/ping/paid
+```
+
+**Run the mock server locally (no wallet, no tokens, no live chain needed):**
+
+```bash
+# Terminal 1 — start mock server
+npx @mpp-inspector/mock-server
+
+# Terminal 2 — try all commands
+mpp-inspector inspect http://localhost:3402/v1/query
+mpp-inspector scan localhost:3402
+mpp-inspector compare http://localhost:3402/v1/query http://localhost:3402/v1/search http://localhost:3402/v1/premium
+mpp-inspector flow http://localhost:3402/v1/query --dry-run
+```
+
+**Use as a Claude Code plugin:**
+
+```
+/plugin marketplace add amgb20/mpp-inspector-marketplace
+/plugin install mpp-inspector@mpp-inspector
+/mpp-inspect https://mpp.dev/api/ping/paid
+```
+
 <br />
 
 ## `> whoami`
@@ -678,6 +741,25 @@ Example prompts in Claude Code or Cursor:
 
 "Compare pricing between these three MPP APIs: url1, url2, url3"
 ```
+
+<br />
+
+## `> testing`
+
+```bash
+npm run test                    # unit tests (156 tests)
+npm run test:coverage           # unit tests + coverage report (80%+ enforced)
+npm run test:integration        # integration tests against mock server (11 tests)
+npm run test:integration:real   # integration tests against live mpp.dev (6 tests)
+```
+
+| Suite | Tests | What it covers |
+|:--|:--|:--|
+| Unit | 156 | Parser, crypto, chains, format, http, problem-details, wallet |
+| Integration (mock) | 11 | All 4 mock endpoints, receipts, scan, compare |
+| Integration (real) | 6 | Live `mpp.dev/api/ping/paid`: challenge parsing, verification, RFC 9457 body |
+
+CI runs all suites on every push via GitHub Actions (Node 20 + 22).
 
 <br />
 
