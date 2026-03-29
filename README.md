@@ -35,9 +35,13 @@
 
 <div align="center">
 
-https://github.com/amgb20/MPP-Inspector/raw/main/my-video/out/mpp-inspector-x.mp4
+<!-- REPLACE_WITH_VIDEO: Upload mpp-inspector-x.mp4 to a GitHub issue, copy the
+     generated https://github.com/user-attachments/assets/... URL, and paste it
+     on the blank line below (on its own line, no markdown). Then delete this comment. -->
 
-*45-second demo: inspect a 402 challenge, discover endpoints, compare pricing — all from the terminal.*
+[![Watch the demo](https://img.shields.io/badge/%E2%96%B6%EF%B8%8F_Watch_Demo-45s_terminal_walkthrough-0d1117?style=for-the-badge&labelColor=00e5ff)](./my-video/out/mpp-inspector-x.mp4)
+
+*inspect a 402 challenge, discover endpoints, compare pricing — all from the terminal.*
 
 </div>
 
