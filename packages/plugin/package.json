@@ -45,8 +45,8 @@
     "mpp-inspector": "0.1.2"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^25.5.0",
     "tsup": "^8.4.0",
-    "typescript": "^5.7.3"
+    "typescript": "^6.0.2"
   }
 }
