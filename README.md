@@ -28,8 +28,18 @@
 </p>
 
 <p align="center">
-  <sub>Featured in <a href="https://github.com/mbeato/awesome-mpp#agent-tools--clis">awesome-mpp</a> — the MPP ecosystem registry</sub>
+  <a href="https://github.com/mbeato/awesome-mpp#agent-tools--clis"><img src="https://img.shields.io/badge/%E2%AD%90_Featured_in-awesome--mpp-00e5ff?style=for-the-badge&labelColor=0d1117" alt="Featured in awesome-mpp" /></a>
 </p>
+
+<br />
+
+<div align="center">
+
+<img src="./my-video/out/mpp-inspector-demo.gif" alt="MPP Inspector demo — inspect, scan, compare" width="720" />
+
+*inspect a 402 challenge, discover endpoints, compare pricing — all from the terminal.*
+
+</div>
 
 <br />
 
