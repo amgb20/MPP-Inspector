@@ -27,6 +27,10 @@
   <a href="#testing"><img src="https://img.shields.io/badge/coverage-80%25+-00e5ff?style=flat-square&labelColor=0d1117" alt="coverage" /></a>
 </p>
 
+<p align="center">
+  <sub>Featured in <a href="https://github.com/mbeato/awesome-mpp#agent-tools--clis">awesome-mpp</a> — the MPP ecosystem registry</sub>
+</p>
+
 <br />
 
 ---
