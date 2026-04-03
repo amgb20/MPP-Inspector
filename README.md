@@ -30,7 +30,7 @@
 🚀 **Featured**
 - ⭐ [awesome-mpp](https://github.com/mbeato/awesome-mpp)
 - 🌐 [mpp.dev/extensions](https://mpp.dev/extensions)
-``
+
 
 <br />
 
