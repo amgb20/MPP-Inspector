@@ -40,8 +40,8 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.12.1",
-    "zod": "^3.25.23",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.3.6",
     "mpp-inspector": "0.1.2"
   },
   "devDependencies": {
