@@ -27,9 +27,10 @@
   <a href="#testing"><img src="https://img.shields.io/badge/coverage-80%25+-00e5ff?style=flat-square&labelColor=0d1117" alt="coverage" /></a>
 </p>
 
-<p align="center">
-  <a href="https://github.com/mbeato/awesome-mpp#agent-tools--clis"><img src="https://img.shields.io/badge/%E2%AD%90_Featured_in-awesome--mpp-00e5ff?style=for-the-badge&labelColor=0d1117" alt="Featured in awesome-mpp" /></a>
-</p>
+🚀 **Featured**
+- ⭐ [awesome-mpp](https://github.com/mbeato/awesome-mpp)
+- 🌐 [mpp.dev/extensions](https://mpp.dev/extensions)
+``
 
 <br />
 
